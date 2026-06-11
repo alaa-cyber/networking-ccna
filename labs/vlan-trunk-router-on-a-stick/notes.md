@@ -93,7 +93,7 @@ name Native
 
 ## SW1
 
-
+```bash
 interface range f0/1 - 2
 switchport mode access
 switchport access vlan 10
@@ -101,11 +101,11 @@ switchport access vlan 10
 interface range f0/3 - 4
 switchport mode access
 switchport access vlan 30
-
+```
 
 ## SW2
 
-
+```bash
 interface f0/1
 switchport mode access
 switchport access vlan 20
@@ -113,7 +113,7 @@ switchport access vlan 20
 interface range f0/2 - 3
 switchport mode access
 switchport access vlan 10
-
+```
 
 ---
 
@@ -121,21 +121,21 @@ switchport access vlan 10
 
 ## SW1
 
-
+```bash
 interface g0/1
 switchport mode trunk
 switchport trunk native vlan 99
 switchport trunk allowed vlan 10,20,30
-
+```
 
 ## SW2
 
-
+```bash
 interface g0/1
 switchport mode trunk
 switchport trunk native vlan 99
 switchport trunk allowed vlan 10,20,30
-
+```
 
 ---
 
@@ -143,12 +143,12 @@ switchport trunk allowed vlan 10,20,30
 
 ## SW2
 
-
+```bash
 interface g0/2
 switchport mode trunk
 switchport trunk native vlan 99
 switchport trunk allowed vlan 10,20,30
-
+```
 
 ---
 
@@ -156,55 +156,55 @@ switchport trunk allowed vlan 10,20,30
 
 ## Physical Interface
 
-
+```bash
 interface g0/0
 no shutdown
-
+```
 
 ---
 
 ## VLAN 10
 
-
+```bash
 interface g0/0.10
 encapsulation dot1Q 10
 ip address 10.0.0.62 255.255.255.192
-
+```
 
 ---
 
 ## VLAN 20
 
-
+```bash
 interface g0/0.20
 encapsulation dot1Q 20
 ip address 10.0.0.126 255.255.255.192
-
+```
 
 ---
 
 ## VLAN 30
 
-
+```bash
 interface g0/0.30
 encapsulation dot1Q 30
 ip address 10.0.0.190 255.255.255.192
-
+```
 
 ---
 
 ## Native VLAN
 
-
+```bash
 interface g0/0.99
 encapsulation dot1Q 99 native
-
+```
 
 ---
 
 # Step 6 - Verification Commands
 
-
+```bash
 show vlan brief
 show interfaces trunk
 show ip interface brief
@@ -215,11 +215,11 @@ show running-config
 
 # Connectivity Tests
 
-
+```bash
 ping 10.0.0.65
 ping 10.0.0.129
 ping 10.0.0.3
-
+```
 
 Expected Result:
 
@@ -276,6 +276,7 @@ Adds VLAN information to Ethernet frames.
 
 # Important Commands
 
+```bash
 show vlan brief
 show interfaces trunk
 show ip route
@@ -296,7 +297,11 @@ This lab demonstrates:
 * Router-on-a-Stick
 * Inter-VLAN Routing
 
+---
 
+## Screenshot
+
+topology.png
 
 ```
 ```
