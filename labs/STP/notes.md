@@ -289,8 +289,4 @@ If a BPDU is received,
 
 The interface enters Err-Disabled state.
 
----
 
-# Screenshot
-
-![STP Topology](topology.png)
