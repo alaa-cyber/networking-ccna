@@ -13,9 +13,6 @@ Configure and verify different EtherChannel technologies:
 
 ---
 
-## Topology
-
-![EtherChannel Lab Topology](topology.png)
 
 Networks:
 
