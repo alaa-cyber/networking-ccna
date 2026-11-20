@@ -1,297 +1,277 @@
 
-# Dynamic Routing – CCNA Day 24
+# CCNA  – OSPF
 
-## 1. Introduction
+## 1. Introduction to OSPF
 
-Dynamic Routing allows routers to automatically learn and update routes by exchanging routing information with other routers.
+OSPF stands for Open Shortest Path First.
 
-Unlike static routing, dynamic routing protocols can adapt to network topology changes.
+OSPF is a dynamic routing protocol used to exchange routing information between routers.
 
-### Why use Dynamic Routing?
+### Main Characteristics
 
-- Automatic route discovery
-- Automatic adaptation to network changes
-- Better scalability
-- Reduced manual configuration
-- Redundant paths and failover
+- Interior Gateway Protocol (IGP)
+- Link-State Routing Protocol
+- Open Standard
+- Uses the Shortest Path First (SPF) algorithm
+- Uses cost as its routing metric
+- Supports classless routing (CIDR/VLSM)
+- Supports hierarchical network design using areas
+- Administrative Distance: 110 (Cisco)
 
----
-
-## 2. Static Routing vs Dynamic Routing
-
-| Static Routing | Dynamic Routing |
-|---|---|
-| Routes manually configured | Routes learned automatically |
-| No routing protocol exchanges | Routers exchange routing information |
-| Limited scalability | Better scalability |
-| Manual updates after changes | Automatic route recalculation |
-| Low protocol overhead | Uses CPU, memory and bandwidth |
-
-**Important:** Static routing is still useful for small networks, default routes and predictable paths.
+OSPFv2 is primarily used for IPv4 routing.
+OSPFv3 supports IPv6 and can also support IPv4 through extensions.
 
 ---
 
-## 3. Types of Dynamic Routing Protocols
+## 2. Distance Vector vs Link-State
 
-Dynamic routing protocols are divided into two major categories:
-
-### IGP – Interior Gateway Protocol
-
-Used to exchange routing information within one Autonomous System (AS).
-
-Examples:
-
-- RIP
-- EIGRP
-- OSPF
-- IS-IS
-
-### EGP – Exterior Gateway Protocol
-
-Used to exchange routing information between Autonomous Systems.
-
-Example:
-
-- BGP (Border Gateway Protocol)
-
-An Autonomous System is a group of networks managed under a common routing policy.
-
----
-
-## 4. IGP Categories
-
-### Distance Vector
-
-Routers exchange routing information with their neighbors.
-
-Examples:
-
-- RIP
-- EIGRP (Advanced Distance Vector)
-
-Characteristics:
-
-- Uses routing information received from neighbors
-- Does not require a complete link-state topology database
-- Uses metrics to select routes
-
-### Link State
-
-Routers build a topology database of their routing area.
-
-Examples:
-
-- OSPF
-- IS-IS
-
-Characteristics:
-
-- Exchanges link-state information
-- Builds a Link-State Database (LSDB)
-- Calculates shortest paths using SPF (Dijkstra)
-- Supports scalable network designs
-
----
-
-## 5. Dynamic Routing Protocol Comparison
-
-| Protocol | Category | Main Metric |
+| Feature | Distance Vector | Link-State |
 |---|---|---|
-| RIP | Distance Vector | Hop Count |
-| EIGRP | Advanced Distance Vector | Bandwidth and Delay |
-| OSPF | Link State | Cost |
-| IS-IS | Link State | Cost |
-| BGP | Path Vector | Path Attributes |
+| Examples | RIP, EIGRP (advanced distance vector) | OSPF, IS-IS |
+| Network knowledge | Routes learned from neighbors | Link-state topology information |
+| Algorithm | Protocol-dependent | SPF (Dijkstra) |
+| Updates | Protocol-dependent | LSAs exchanged and flooded |
+| Metric | Protocol-dependent | OSPF cost |
 
-### RIP
-
-- Maximum usable hop count: 15
-- 16 hops means unreachable
-- Uses hop count as its metric
-
-### EIGRP
-
-- Uses the DUAL algorithm
-- Uses bandwidth and delay by default
-- Supports rapid convergence
-
-### OSPF
-
-- Open-standard IGP
-- Uses the SPF algorithm
-- Uses interface costs
-- Supports areas
-
-### BGP
-
-- Exterior routing protocol
-- Uses path attributes and routing policies
-- Commonly used for Internet interdomain routing
+OSPF routers build a Link-State Database (LSDB) and use the SPF algorithm to calculate the best routes.
 
 ---
 
-## 6. Routing Metrics
+## 3. OSPF Areas
 
-A metric is a value used by a routing protocol to compare different paths.
+OSPF uses areas to organize networks.
 
-Examples:
+### Backbone Area
 
-- Hop Count
-- Bandwidth
-- Delay
-- Cost
+Area 0 is the OSPF backbone area.
 
-Within the same routing protocol, the route with the best metric is generally preferred.
+In a normal multi-area OSPF design, non-backbone areas must connect logically to Area 0.
 
-**Note:** Metrics from different routing protocols are not directly comparable.
+### Single-Area OSPF
 
----
+All OSPF routers belong to one area, commonly Area 0.
 
-## 7. Administrative Distance (AD)
+### Multi-Area OSPF
 
-Administrative Distance indicates how trustworthy a route source is to a Cisco router.
+Routers are organized into multiple areas to improve scalability.
 
-Lower AD = More preferred route source.
+### Router Types
 
-| Route Source | Default Cisco AD |
-|---|---:|
-| Connected | 0 |
-| Static | 1 |
-| EIGRP Summary | 5 |
-| External BGP | 20 |
-| Internal EIGRP | 90 |
-| OSPF | 110 |
-| IS-IS | 115 |
-| RIP | 120 |
-| External EIGRP | 170 |
-| Internal BGP | 200 |
-
-### Important Difference
-
-Administrative Distance:
-
-Used to choose between routes learned from different sources.
-
-Metric:
-
-Used to select the best route within a routing protocol.
+- Internal Router: All OSPF interfaces belong to one area.
+- Backbone Router: Has an interface in Area 0.
+- ABR: Area Border Router, connects multiple areas.
+- ASBR: Autonomous System Boundary Router, redistributes routes from another routing domain.
 
 ---
 
-## 8. Route Selection Process
+## 4. OSPF Router ID
 
-When multiple routes exist, a Cisco router generally:
-
-1. Prefers the longest matching prefix for forwarding packets.
-2. Uses Administrative Distance to select between competing route sources for the same prefix.
-3. Uses routing protocol metrics to compare routes learned through the same protocol.
-4. May install equal-cost routes for load balancing.
-
-### Example
-
-For the same destination prefix:
-
-- OSPF route: AD 110
-- RIP route: AD 120
-
-The OSPF route is preferred because it has the lower AD.
-
----
-
-## 9. Dynamic Routing and Convergence
-
-Convergence is the process through which routers update their routing information after a topology change.
+The Router ID (RID) is a 32-bit identifier written in dotted-decimal notation.
 
 Example:
 
-1. A network link fails.
-2. The routing protocol detects the failure.
-3. Routers exchange updated information.
-4. New best paths are calculated.
-5. Routing tables are updated.
+1.1.1.1
 
-Convergence speed depends on the routing protocol, topology and configuration.
+### Router ID Selection (Cisco IOS)
 
----
-
-## 10. Useful Cisco Commands
-
-Display the routing table:
-
-```cisco
-show ip route
-```
-
-Display the routing protocols:
-
-```cisco
-show ip protocols
-```
-
-Display interface IP addresses:
-
-```cisco
-show ip interface brief
-```
-
-Display routing table entries learned through OSPF:
-
-```cisco
-show ip route ospf
-```
-
-Display routing table entries learned through EIGRP:
-
-```cisco
-show ip route eigrp
-```
-
----
-
-## 11. Routing Table Codes
-
-| Code | Meaning |
-|---|---|
-| C | Connected |
-| L | Local |
-| S | Static |
-| R | RIP |
-| D | EIGRP |
-| O | OSPF |
-| B | BGP |
+1. Manually configured OSPF Router ID
+2. Highest IPv4 address on an active loopback interface
+3. Highest IPv4 address on an active physical interface
 
 Example:
 
-```text
-O 192.168.10.0/24 [110/20] via 10.0.0.2
+```cisco
+router ospf 1
+ router-id 1.1.1.1
+```
+
+Note: A router ID change may require restarting the OSPF process to take effect.
+
+---
+
+## 5. OSPF Cost
+
+OSPF selects routes based on the total cost of the path.
+
+Cisco's traditional default calculation:
+
+Cost = Reference Bandwidth / Interface Bandwidth
+
+Default reference bandwidth: 100 Mbps.
+
+### Examples
+
+| Interface | Bandwidth | Default Cost |
+|---|---|---|
+| Ethernet | 10 Mbps | 10 |
+| FastEthernet | 100 Mbps | 1 |
+| GigabitEthernet | 1000 Mbps | 1 |
+| 10 GigabitEthernet | 10000 Mbps | 1 |
+
+With the traditional default reference bandwidth, FastEthernet and faster interfaces can have the same cost.
+
+### Change Reference Bandwidth
+
+```cisco
+router ospf 1
+ auto-cost reference-bandwidth 100000
+```
+
+The value is expressed in Mbps.
+
+Configure a consistent reference bandwidth on all OSPF routers.
+
+### Manual Interface Cost
+
+```cisco
+interface g0/0
+ ip ospf cost 10
+```
+
+---
+
+## 6. OSPF Neighbor Relationships
+
+OSPF routers discover neighbors using Hello packets.
+
+Important requirements for adjacency include:
+
+- Compatible area IDs
+- Compatible Hello and Dead timers
+- Compatible authentication settings
+- Compatible area parameters
+- Appropriate IP addressing and network connectivity
+
+Some requirements depend on the OSPF network type.
+
+### Default Hello and Dead Timers
+
+On common broadcast and point-to-point OSPF networks:
+
+Hello Interval: 10 seconds
+
+Dead Interval: 40 seconds
+
+These defaults are not universal for every OSPF network type.
+
+---
+
+## 7. OSPF Packet Types
+
+| Type | Name | Purpose |
+|---|---|---|
+| 1 | Hello | Discover and maintain neighbors |
+| 2 | Database Description (DBD) | Summarize LSDB contents |
+| 3 | Link-State Request (LSR) | Request LSAs |
+| 4 | Link-State Update (LSU) | Send LSAs |
+| 5 | Link-State Acknowledgment (LSAck) | Acknowledge LSAs |
+
+OSPF uses IP Protocol Number 89.
+
+OSPFv2 multicast addresses:
+
+224.0.0.5 – AllSPFRouters
+
+224.0.0.6 – AllDRouters
+
+---
+
+## 8. Basic OSPF Configuration
+
+### Enable OSPF
+
+```cisco
+enable
+configure terminal
+router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
 ```
 
 Explanation:
 
-- O = OSPF
-- 192.168.10.0/24 = Destination network
-- 110 = Administrative Distance
-- 20 = OSPF Metric
-- 10.0.0.2 = Next-hop address
+`router ospf 1`
+
+Creates or enters OSPF process 1.
+
+The process ID is locally significant and does not need to match on neighboring routers.
+
+`network 192.168.1.0 0.0.0.255 area 0`
+
+Enables OSPF on matching interfaces and assigns them to Area 0.
+
+### Alternative Interface Configuration
+
+```cisco
+interface g0/0
+ ip ospf 1 area 0
+```
+
+This enables OSPF directly on the interface.
 
 ---
 
-## 12. Key Concepts to Remember
+## 9. OSPF Verification Commands
 
-- Dynamic Routing
-- Static vs Dynamic Routing
-- IGP vs EGP
-- Autonomous System
-- Distance Vector
-- Link State
-- Path Vector
-- RIP
-- EIGRP
-- OSPF
-- IS-IS
-- BGP
-- Routing Metrics
-- Administrative Distance
-- Longest Prefix Match
-- Convergence
-- Routing Table
+```cisco
+show ip protocols
+show ip ospf
+show ip ospf interface brief
+show ip ospf neighbor
+show ip ospf database
+show ip route ospf
+show ip route
+```
+
+### Important Route Codes
+
+O – OSPF intra-area route
+
+O IA – OSPF inter-area route
+
+O E1 – OSPF external type 1
+
+O E2 – OSPF external type 2
+
+---
+
+## 10. Key Concepts to Remember
+
+- OSPF = Open Shortest Path First
+- OSPF is a Link-State IGP
+- SPF algorithm = Dijkstra
+- Administrative Distance = 110
+- Metric = Cost
+- Backbone Area = Area 0
+- OSPF IP Protocol Number = 89
+- Router ID = Unique 32-bit identifier
+- Hello packets = Neighbor discovery
+- LSDB = Link-State Database
+- LSA = Link-State Advertisement
+- ABR = Area Border Router
+- ASBR = Autonomous System Boundary Router
+
+---
+
+## 11. CCNA Review Questions
+
+1. What type of routing protocol is OSPF?
+2. Which algorithm does OSPF use?
+3. What is the administrative distance of OSPF?
+4. What is the purpose of Area 0?
+5. How does Cisco IOS select the OSPF Router ID?
+6. What is the difference between an ABR and an ASBR?
+7. What is the default OSPF reference bandwidth?
+8. What are the five OSPF packet types?
+9. What is the difference between O and O IA routes?
+10. What command displays OSPF neighbors?
+
+---
+
+## 12. Conclusion
+
+OSPF is a scalable link-state routing protocol.
+
+It uses LSAs to build a topology database and calculates shortest paths using the SPF algorithm.
+
+Understanding OSPF areas, router IDs, costs, and neighbor relationships is essential for CCNA and network troubleshooting.
